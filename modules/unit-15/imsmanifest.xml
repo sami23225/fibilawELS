@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest
+  identifier="ELS-FIBI-LAW-UNIT-15"
+  version="1.0"
+  xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+  xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+    http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+    http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+
+  <organizations default="ELS_Unit15_Org">
+    <organization identifier="ELS_Unit15_Org">
+      <title>ELS | Unit 15: The Body — Fibi Law</title>
+      <item identifier="ELS_Unit15_Item" identifierref="ELS_Unit15_Resource">
+        <title>Unit 15: The Body</title>
+        <adlcp:masteryscore>70</adlcp:masteryscore>
+      </item>
+    </organization>
+  </organizations>
+
+  <resources>
+    <resource
+      identifier="ELS_Unit15_Resource"
+      type="webcontent"
+      adlcp:scormtype="sco"
+      href="index.html">
+      <file href="index.html"/>
+      <file href="content.js"/>
+      <file href="scorm-api.js"/>
+      <file href="brand.css"/>
+    </resource>
+  </resources>
+
+</manifest>

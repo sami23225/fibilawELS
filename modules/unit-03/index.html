@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELS | Unit 03: Numbers — Fibi Law</title>
+<link rel="stylesheet" href="brand.css">
+<script src="scorm-api.js"></script>
+<script src="content.js"></script>
+<style>
+/* ── LAYOUT ── */
+body { background: #07111E; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 0; margin: 0; }
+.scorm-shell { width: 100%; max-width: 940px; min-height: 100vh; background: white; display: flex; flex-direction: column; box-shadow: 0 0 80px rgba(0,0,0,0.5); }
+
+/* ── TOP BAR ── */
+.topbar { background: var(--navy); padding: 12px 28px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; flex-shrink: 0; }
+.logo-area { display: flex; align-items: center; gap: 12px; }
+.logo-img { height: 34px; width: auto; }
+.logo-div { width: 1px; height: 26px; background: rgba(255,255,255,0.15); }
+.lang-toggle { display: flex; align-items: center; gap: 3px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 4px; }
+.lang-btn { padding: 6px 13px; border-radius: 7px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: rgba(255,255,255,0.45); transition: all 0.2s; display: flex; align-items: center; gap: 5px; font-family: 'Inter', sans-serif; }
+.lang-btn:hover { color: white; background: rgba(255,255,255,0.1); }
+.lang-btn.active { background: var(--teal); color: white; }
+.lang-flag { font-size: 14px; }
+.progress-area { display: flex; align-items: center; gap: 10px; }
+.progress-label { color: var(--slate); font-size: 11px; font-family: 'Fragment Mono', monospace; }
+.progress-bar { width: 100px; height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--teal); border-radius: 3px; transition: width 0.4s ease; }
+
+/* ── TAB NAV ── */
+.tab-nav { background: #F8FAFB; border-bottom: 1px solid var(--border); display: flex; overflow-x: auto; flex-shrink: 0; }
+.tab-btn { padding: 12px 18px; font-size: 12px; font-weight: 600; color: var(--slate); background: none; border: none; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; white-space: nowrap; display: flex; align-items: center; gap: 6px; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+.tab-btn:hover { color: var(--navy); }
+.tab-btn.active { color: var(--teal); border-bottom-color: var(--teal); background: white; }
+.tab-btn.done { color: var(--success); }
+.step-num { width: 20px; height: 20px; border-radius: 50%; background: var(--light); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; transition: all 0.2s; }
+.tab-btn.active .step-num { background: var(--teal); color: white; }
+.tab-btn.done .step-num { background: var(--success); color: white; }
+
+/* ── CONTENT ── */
+.module-content { padding: 36px 44px; flex: 1; overflow-y: auto; }
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ── WELCOME ── */
+.screen-title { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 34px; color: var(--navy); line-height: 1.1; margin-bottom: 14px; }
+.screen-desc { font-size: 15px; color: var(--slate-dark); line-height: 1.75; max-width: 580px; margin-bottom: 26px; }
+.objectives-box { background: var(--light); border-left: 4px solid var(--teal); border-radius: 0 10px 10px 0; padding: 18px 22px; margin-bottom: 24px; }
+.objectives-box h3 { font-family: 'Fragment Mono', monospace; font-size: 10px; color: var(--navy); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+.obj-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.obj-list li { font-size: 14px; color: #334155; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+.obj-check { flex-shrink: 0; margin-top: 1px; }
+.module-meta { display: flex; gap: 12px; flex-wrap: wrap; }
+.meta-chip { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--slate-dark); background: var(--light); padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border); }
+
+/* ── NOTICE ── */
+.notice-banner { display: flex; align-items: flex-start; gap: 12px; background: rgba(60,191,186,0.07); border: 1px solid rgba(60,191,186,0.25); border-radius: 10px; padding: 12px 16px; margin-bottom: 22px; }
+.notice-text { font-size: 13px; color: #1E6864; line-height: 1.5; }
+
+/* ── FLASHCARDS ── */
+.flashcard-area { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.card-counter { font-family: 'Fragment Mono', monospace; font-size: 12px; color: var(--slate); letter-spacing: 1px; }
+.flashcard { width: 100%; max-width: 480px; height: 280px; perspective: 1400px; cursor: pointer; user-select: none; }
+.flashcard-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.65s cubic-bezier(0.175,0.885,0.32,1.275); }
+.flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+.card-face { position: absolute; inset: 0; border-radius: 18px; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px; text-align: center; box-shadow: 0 12px 40px rgba(1,45,68,0.15); }
+.card-front { background: var(--navy); }
+.card-back { background: var(--teal); transform: rotateY(180deg); }
+.card-hint-tag { position: absolute; top: 16px; font-family: 'Fragment Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; display: flex; align-items: center; gap: 5px; }
+.card-front .card-hint-tag { color: rgba(255,255,255,0.25); }
+.card-back .card-hint-tag { color: rgba(255,255,255,0.4); }
+.card-word { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 38px; color: white; letter-spacing: 1px; margin-bottom: 6px; }
+.card-pos { font-size: 13px; color: var(--teal); font-style: italic; }
+.card-eng-note { position: absolute; bottom: 14px; font-family: 'Fragment Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.2); letter-spacing: 1px; }
+.card-def { font-size: 17px; font-weight: 600; color: white; margin-bottom: 10px; line-height: 1.45; }
+.card-divider { width: 40px; height: 1px; background: rgba(255,255,255,0.3); margin: 6px auto; }
+.card-en-label { font-family: 'Fragment Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.5); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+.card-ex { font-size: 13px; color: rgba(255,255,255,0.82); font-style: italic; line-height: 1.6; }
+.vocab-dots { display: flex; gap: 5px; }
+.vocab-dot { width: 7px; height: 7px; border-radius: 50%; background: #E2E8F0; transition: all 0.3s; }
+.vocab-dot.active { background: var(--teal); transform: scale(1.3); }
+.vocab-dot.seen { background: var(--navy); }
+.card-nav { display: flex; gap: 10px; }
+.card-nav button { padding: 10px 22px; border-radius: 9px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 7px; }
+.btn-card-prev { background: white; color: var(--navy); border: 2px solid var(--border); }
+.btn-card-next { background: var(--teal); color: white; border: 2px solid var(--teal); }
+.btn-card-prev:hover { border-color: var(--teal); color: var(--teal); }
+.btn-card-next:hover { background: #2AAEAA; }
+
+/* ── QUIZ ── */
+.quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.quiz-counter { font-family: 'Fragment Mono', monospace; font-size: 12px; color: var(--slate); letter-spacing: 1px; }
+.quiz-score-badge { background: var(--light); padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; color: var(--navy); border: 1px solid var(--border); font-family: 'Fragment Mono', monospace; }
+.quiz-instruction { font-size: 15px; color: var(--slate-dark); margin-bottom: 6px; }
+.quiz-word { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 34px; color: var(--teal); margin-bottom: 20px; letter-spacing: 0.5px; }
+.quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.quiz-opt { padding: 15px 18px; border: 2px solid var(--border); border-radius: 11px; font-size: 14px; font-weight: 500; color: var(--navy); cursor: pointer; text-align: left; background: white; transition: all 0.2s; font-family: 'Inter', sans-serif; line-height: 1.4; }
+.quiz-opt:hover:not(:disabled) { border-color: var(--teal); background: rgba(60,191,186,0.04); }
+.quiz-opt.correct { border-color: var(--success); background: #ECFDF5; color: #065F46; }
+.quiz-opt.incorrect { border-color: var(--error); background: #FEF2F2; color: #991B1B; }
+.quiz-opt:disabled { cursor: default; }
+.quiz-feedback { padding: 13px 16px; border-radius: 10px; font-size: 14px; display: none; align-items: flex-start; gap: 10px; line-height: 1.5; }
+.quiz-feedback.show { display: flex; }
+.quiz-feedback.correct-fb { background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; }
+.quiz-feedback.incorrect-fb { background: #FEF2F2; color: #991B1B; border: 1px solid #FCA5A5; }
+.quiz-next-btn { margin-top: 16px; }
+
+/* ── READING ── */
+.reading-tip { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--slate-dark); margin-bottom: 14px; background: var(--light); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); }
+.reading-passage { background: #FAFBFC; border: 1px solid var(--border); border-radius: 12px; padding: 24px 30px; margin-bottom: 20px; line-height: 1.9; font-size: 15px; color: #1E293B; }
+.reading-passage p { margin-bottom: 12px; }
+.reading-passage p:last-child { margin-bottom: 0; }
+.hl { background: rgba(60,191,186,0.12); padding: 1px 5px; border-radius: 4px; cursor: help; font-weight: 600; border-bottom: 1px dashed var(--teal); position: relative; }
+.hl .tip { display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: var(--navy); color: white; padding: 9px 14px; border-radius: 9px; font-size: 12px; white-space: nowrap; z-index: 20; pointer-events: none; font-weight: 400; box-shadow: 0 4px 16px rgba(0,0,0,0.3); min-width: 140px; text-align: center; }
+.hl .tip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--navy); }
+.hl:hover .tip { display: block; }
+.comp-label { font-family: 'Fragment Mono', monospace; font-size: 10px; color: var(--navy); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px; }
+.comp-q { padding: 16px 20px; border: 1px solid var(--border); border-radius: 11px; background: white; margin-bottom: 12px; }
+.comp-q-text { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 10px; }
+.comp-opts { display: flex; flex-direction: column; gap: 7px; }
+.comp-opt { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #334155; cursor: pointer; padding: 8px 12px; border-radius: 7px; transition: background 0.15s; }
+.comp-opt:hover { background: var(--light); }
+.comp-opt.correct-ans { background: #ECFDF5; color: #065F46; }
+.comp-opt.incorrect-ans { background: #FEF2F2; color: #991B1B; }
+
+/* ── FILL-IN-BLANK ── */
+.fitb-intro { font-size: 14px; color: var(--slate-dark); margin-bottom: 20px; line-height: 1.65; }
+.wordbank-label { font-family: 'Fragment Mono', monospace; font-size: 10px; color: var(--slate); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+.word-bank { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 16px; background: var(--light); border-radius: 10px; border: 1px solid var(--border); margin-bottom: 24px; }
+.word-chip { padding: 7px 16px; background: var(--navy); color: white; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; user-select: none; font-family: 'Fragment Mono', monospace; letter-spacing: 0.5px; border: none; }
+.word-chip:hover { background: var(--teal); }
+.word-chip.used { opacity: 0.28; pointer-events: none; text-decoration: line-through; }
+.fitb-questions { display: flex; flex-direction: column; gap: 18px; }
+.fitb-q-num { font-family: 'Fragment Mono', monospace; font-size: 10px; color: var(--teal); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 7px; }
+.fitb-sentence { font-size: 16px; color: var(--navy); line-height: 1.7; display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+.fitb-blank { display: inline-block; min-width: 110px; border-bottom: 2px solid var(--teal); padding: 3px 10px; font-weight: 700; color: var(--teal); background: rgba(60,191,186,0.07); border-radius: 5px 5px 0 0; font-size: 15px; font-family: 'Fragment Mono', monospace; cursor: pointer; transition: all 0.2s; }
+.fitb-blank.empty { color: transparent; background: rgba(60,191,186,0.04); }
+.fitb-blank.correct { color: var(--success); border-color: var(--success); background: #ECFDF5; cursor: default; }
+.fitb-blank.incorrect { color: var(--error); border-color: var(--error); background: #FEF2F2; }
+.fitb-blank:not(.empty):not(.correct):not(.incorrect):hover { background: rgba(60,191,186,0.15); }
+
+/* ── SCORE ── */
+.score-screen { text-align: center; padding: 12px 20px; }
+.score-ring-wrap { position: relative; width: 140px; height: 140px; margin: 0 auto 24px; }
+.score-ring { transform: rotate(-90deg); }
+.ring-bg { fill: none; stroke: var(--border); stroke-width: 8; }
+.ring-fill { fill: none; stroke: var(--teal); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 345.4; transition: stroke-dashoffset 1.2s ease; }
+.ring-fail { stroke: var(--error); }
+.score-ring-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.score-num { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 36px; color: var(--navy); line-height: 1; }
+.score-pct-label { font-family: 'Fragment Mono', monospace; font-size: 11px; color: var(--slate); letter-spacing: 1px; }
+.score-title { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 28px; color: var(--navy); margin-bottom: 6px; }
+.score-sub { font-size: 14px; color: var(--slate-dark); margin-bottom: 26px; }
+.score-breakdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 26px; max-width: 480px; margin-left: auto; margin-right: auto; }
+.score-card { background: var(--light); border-radius: 12px; padding: 16px 10px; text-align: center; border: 1px solid var(--border); }
+.score-card-val { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 26px; color: var(--teal); display: block; margin-bottom: 4px; }
+.score-card-label { font-family: 'Fragment Mono', monospace; font-size: 9px; color: var(--slate); letter-spacing: 1.5px; text-transform: uppercase; }
+.score-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* ── BOTTOM BAR ── */
+.bottombar { background: var(--light); border-top: 1px solid var(--border); padding: 14px 44px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.tagline { font-family: 'Fragment Mono', monospace; font-size: 11px; color: var(--slate); letter-spacing: 0.5px; }
+.bottom-btns { display: flex; gap: 10px; }
+.btn-nav { padding: 11px 22px; border-radius: 9px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 8px; border: none; }
+.btn-back { background: white; color: var(--navy); border: 2px solid var(--border); }
+.btn-back:hover { border-color: var(--teal); color: var(--teal); }
+.btn-fwd  { background: var(--gold); color: var(--navy); }
+.btn-fwd:hover { background: #F59E0B; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(251,191,36,0.3); }
+
+/* SVG icons inline */
+svg.icon { display: inline-flex; vertical-align: middle; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div class="scorm-shell">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="logo-area">
+      <img class="logo-img"
+        src="https://framerusercontent.com/images/7MqXsKyjGWvLQn25G3nNRe5KAM.webp"
+        alt="Fibi Law"
+        onerror="this.style.display='none';document.getElementById('logo-txt').style.display='block'">
+      <span id="logo-txt" style="display:none;font-family:'Poppins',sans-serif;font-weight:800;font-size:17px;color:white;">FIBI LAW</span>
+      <div class="logo-div"></div>
+      <span class="badge badge-teal">ELS Program</span>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="langEN" onclick="setLang('en')"><span class="lang-flag">🇺🇸</span> EN</button>
+      <button class="lang-btn" id="langES" onclick="setLang('es')"><span class="lang-flag">🇪🇸</span> ES</button>
+      <button class="lang-btn" id="langFR" onclick="setLang('fr')"><span class="lang-flag">🇫🇷</span> FR</button>
+    </div>
+    <div class="progress-area">
+      <span class="progress-label" id="progressLabel">1 / 6</span>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:16%"></div></div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tab-nav" id="tabNav"></div>
+
+  <!-- CONTENT -->
+  <div class="module-content">
+
+    <!-- ── SCREEN 1: WELCOME ── -->
+    <div class="screen active" id="screen0">
+      <div class="notice-banner">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0;margin-top:1px">
+          <circle cx="9" cy="9" r="8.25" stroke="#3CBFBA" stroke-width="1.5"/>
+          <path d="M9 8v5" stroke="#3CBFBA" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="9" cy="5.5" r="1" fill="#3CBFBA"/>
+        </svg>
+        <span class="notice-text" id="noticeText"></span>
+      </div>
+      <div class="unit-tag" id="unitTag"></div>
+      <div class="screen-title" id="unitTitle"></div>
+      <div class="screen-desc" id="unitDesc"></div>
+      <div class="objectives-box">
+        <h3 id="objHeading"></h3>
+        <ul class="obj-list" id="objList"></ul>
+      </div>
+      <div class="module-meta" id="moduleMeta"></div>
+    </div>
+
+    <!-- ── SCREEN 2: FLASHCARDS ── -->
+    <div class="screen" id="screen1">
+      <div class="unit-tag" id="vocabTag"></div>
+      <div class="screen-title" style="font-size:30px;margin-bottom:6px;" id="vocabTitle"></div>
+      <p style="font-size:14px;color:var(--slate);margin-bottom:24px;" id="vocabSubhead"></p>
+      <div class="flashcard-area">
+        <div class="card-counter" id="cardCounter"></div>
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+          <div class="flashcard-inner">
+            <div class="card-face card-front">
+              <div class="card-hint-tag">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="rgba(255,255,255,0.25)" stroke-width="1.1"/><path d="M5 3v2.5l1.5 1.5" stroke="rgba(255,255,255,0.25)" stroke-width="1.1" stroke-linecap="round"/></svg>
+                <span id="cardTapLabel"></span>
+              </div>
+              <div class="card-word" id="cardWord"></div>
+              <div class="card-pos" id="cardPos"></div>
+              <div class="card-eng-note" id="cardEngNote"></div>
+            </div>
+            <div class="card-face card-back">
+              <div class="card-hint-tag" id="cardDefLabel"></div>
+              <div class="card-def" id="cardDef"></div>
+              <div class="card-divider"></div>
+              <div class="card-en-label" id="cardExLabel"></div>
+              <div class="card-ex" id="cardEx"></div>
+            </div>
+          </div>
+        </div>
+        <div class="vocab-dots" id="vocabDots"></div>
+        <div class="card-nav">
+          <button class="btn-card-prev" onclick="prevCard()">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M8 10.5L4 6.5l4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="btnPrevLabel"></span>
+          </button>
+          <button class="btn-card-next" onclick="nextCard()">
+            <span id="btnNextLabel"></span>
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M5 10.5l4-4-4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCREEN 3: QUIZ ── -->
+    <div class="screen" id="screen2">
+      <div class="unit-tag" id="quizTag"></div>
+      <div class="quiz-header">
+        <div class="quiz-counter" id="quizCounter"></div>
+        <div class="quiz-score-badge" id="quizScoreBadge">Score: 0 / 0</div>
+      </div>
+      <div class="quiz-instruction" id="quizInstruction"></div>
+      <div class="quiz-word" id="quizWord"></div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <div class="quiz-next-btn" id="quizNextBtn" style="display:none;">
+        <button class="btn-nav btn-fwd" onclick="nextQuizQuestion()">
+          <span id="quizNextLabel"></span>
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M5 10.5l4-4-4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── SCREEN 4: READING ── -->
+    <div class="screen" id="screen3">
+      <div class="unit-tag" id="readTag"></div>
+      <div class="screen-title" style="font-size:28px;margin-bottom:10px;" id="readTitle"></div>
+      <div class="reading-tip">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0">
+          <path d="M8 2a4 4 0 0 1 2.5 7.1c-.3.3-.5.7-.5 1.1V11H6v-.8c0-.4-.2-.8-.5-1.1A4 4 0 0 1 8 2z" stroke="#64748B" stroke-width="1.3" stroke-linejoin="round"/>
+          <path d="M6 12.5h4M6.5 14h3" stroke="#64748B" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <span id="readTip"></span>
+      </div>
+      <div class="reading-passage" id="readPassage"></div>
+      <div class="comp-label" id="compLabel"></div>
+      <div id="compQuestions"></div>
+      <div style="margin-top:16px;">
+        <button class="btn-nav btn-back" onclick="checkComprehension()" style="background:var(--light);border:2px solid var(--border);">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7l2.8 2.8 5.2-5.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="checkReadBtn"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── SCREEN 5: FILL-IN-BLANK ── -->
+    <div class="screen" id="screen4">
+      <div class="unit-tag" id="fitbTag"></div>
+      <div class="screen-title" style="font-size:30px;margin-bottom:8px;" id="fitbTitle"></div>
+      <p class="fitb-intro" id="fitbIntro"></p>
+      <div class="wordbank-label" id="wordBankLabel"></div>
+      <div class="word-bank" id="wordBank"></div>
+      <div class="fitb-questions" id="fitbQuestions"></div>
+      <div style="margin-top:22px;">
+        <button class="btn-nav btn-back" onclick="checkFITB()" style="background:var(--light);border:2px solid var(--border);">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7l2.8 2.8 5.2-5.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="checkFitbBtn"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── SCREEN 6: SCORE ── -->
+    <div class="screen" id="screen5">
+      <div class="score-screen">
+        <div class="score-ring-wrap">
+          <svg class="score-ring" width="140" height="140" viewBox="0 0 140 140">
+            <circle class="ring-bg" cx="70" cy="70" r="55"/>
+            <circle class="ring-fill" id="ringFill" cx="70" cy="70" r="55" style="stroke-dashoffset:345.4"/>
+          </svg>
+          <div class="score-ring-text">
+            <div class="score-num" id="scoreNum">—</div>
+            <div class="score-pct-label" id="scorePctLabel"></div>
+          </div>
+        </div>
+        <div class="score-title" id="scoreTitle"></div>
+        <div class="score-sub" id="scoreSub"></div>
+        <div class="score-breakdown" id="scoreBreakdown"></div>
+        <div class="score-btns">
+          <button class="btn-nav btn-back" onclick="showScreen(0)">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M8 10.5L4 6.5l4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="btnReview"></span>
+          </button>
+          <button class="btn-nav btn-fwd" id="btnNextUnit">
+            <span id="btnNextUnitLabel"></span>
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M5 10.5l4-4-4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /module-content -->
+
+  <!-- BOTTOM BAR -->
+  <div class="bottombar">
+    <div class="tagline" id="tagline"></div>
+    <div class="bottom-btns">
+      <button class="btn-nav btn-back" id="btnBack" onclick="prevScreen()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M8 10.5L4 6.5l4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="btnBackLabel"></span>
+      </button>
+      <button class="btn-nav btn-fwd" id="btnNext" onclick="nextScreen()">
+        <span id="btnNextLabel2"></span>
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M5 10.5l4-4-4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div><!-- /scorm-shell -->
+<script>
+// ═══════════════════════════════════════════════════
+//  TRANSLATIONS  (UI text only — vocab words stay English)
+// ═══════════════════════════════════════════════════
+const UI = {
+  en: {
+    tabs: ['Welcome','Vocabulary','Quiz','Reading','Fill-in-Blank','Score'],
+    notice: 'Instructions and definitions are in English. Switch the language above to read them in Spanish or French.',
+    unitTag: 'Unit 01 · First English Course',
+    desc: 'In this lesson, you will learn classroom direction words and how to introduce yourself in English. You will practice with flashcards, a quiz, a short reading, and fill-in-the-blank sentences.',
+    objHeading: 'Learning Objectives',
+    objectives: [
+      'Learn 12 English vocabulary words for classroom directions and introductions',
+      'Read a short story about a student\'s first English class',
+      'Complete fill-in-the-blank sentences using lesson vocabulary',
+      'Score 70% or higher on the quiz to pass this module',
+    ],
+    metaTime: 'min', metaWords: 'vocabulary words', metaPass: 'Pass: 70%', metaAttempts: 'attempts',
+    vocabTitle: 'Learn the Words', vocabSubhead: 'Click each card to see the definition. Review all words before the quiz.',
+    cardTap: 'Tap to flip', cardDef: 'Definition', cardEngNote: 'English word — always in English', cardExLabel: 'Example in English',
+    btnPrev: 'Previous', btnNext: 'Next',
+    quizTag: 'Vocabulary Quiz',
+    quizNext: 'Next Question', quizFinish: 'See Results',
+    correctLabel: 'Correct!', incorrectLabel: 'Not quite.',
+    readTag: 'Reading',
+    readTip: 'Hover over the highlighted words to see their definition in your language.',
+    compLabel: 'Comprehension Questions',
+    checkRead: 'Check Answers',
+    fitbTag: 'Fill in the Blank', fitbTitle: 'Complete the Sentences',
+    wordBankLabel: 'Word Bank (English)',
+    checkFitb: 'Check Answers',
+    scorePct: 'Score', scorePass: 'Great Work!', scoreFail: 'Keep Trying',
+    scorePassSub: 'You passed Unit 01.',
+    scoreFailSub: 'You need 70% to pass. Review the vocabulary and try again.',
+    scoreQuiz: 'Quiz', scoreFitb: 'Fill-in-Blank', scoreReading: 'Reading',
+    btnReview: 'Review Module', btnNextUnit: 'Unit 02',
+    btnBack: 'Back', btnContinue: 'Continue',
+    tagline: '"For Immigrants, By Immigrants" · fibilaw.com',
+    sentence: 'Sentence',
+  },
+  es: {
+    tabs: ['Bienvenida','Vocabulario','Prueba','Lectura','Completar','Resultado'],
+    notice: 'Las instrucciones y definiciones están en español. Las palabras en inglés que estás aprendiendo siempre aparecerán en inglés.',
+    unitTag: 'Unidad 01 · Primer Curso de Inglés',
+    desc: 'En esta lección aprenderás palabras de dirección del salón y cómo presentarte en inglés. Practicarás con tarjetas, una prueba, una lectura corta y oraciones para completar.',
+    objHeading: 'Objetivos de aprendizaje',
+    objectives: [
+      'Aprender 12 palabras de vocabulario en inglés para el salón y presentaciones',
+      'Leer una historia corta sobre el primer día de un estudiante',
+      'Completar oraciones con el vocabulario de la lección',
+      'Obtener 70% o más para aprobar este módulo',
+    ],
+    metaTime: 'min', metaWords: 'palabras de vocabulario', metaPass: 'Aprobar: 70%', metaAttempts: 'intentos',
+    vocabTitle: 'Aprende las palabras', vocabSubhead: 'Haz clic en cada tarjeta para ver la definición. Repasa todas las palabras antes de la prueba.',
+    cardTap: 'Toca para voltear', cardDef: 'Definición', cardEngNote: 'Palabra en inglés — siempre en inglés', cardExLabel: 'Ejemplo en inglés',
+    btnPrev: 'Anterior', btnNext: 'Siguiente',
+    quizTag: 'Prueba de vocabulario',
+    quizNext: 'Siguiente pregunta', quizFinish: 'Ver resultados',
+    correctLabel: '¡Correcto!', incorrectLabel: 'No exactamente.',
+    readTag: 'Lectura',
+    readTip: 'Pasa el cursor sobre las palabras resaltadas para ver su definición en español.',
+    compLabel: 'Preguntas de comprensión',
+    checkRead: 'Verificar respuestas',
+    fitbTag: 'Completar', fitbTitle: 'Completa las oraciones',
+    wordBankLabel: 'Banco de palabras (en inglés)',
+    checkFitb: 'Verificar respuestas',
+    scorePct: 'Resultado', scorePass: '¡Buen trabajo!', scoreFail: 'Sigue intentando',
+    scorePassSub: 'Aprobaste la Unidad 01.',
+    scoreFailSub: 'Necesitas 70% para aprobar. Repasa el vocabulario e intenta de nuevo.',
+    scoreQuiz: 'Prueba', scoreFitb: 'Completar', scoreReading: 'Lectura',
+    btnReview: 'Repasar módulo', btnNextUnit: 'Unidad 02',
+    btnBack: 'Atrás', btnContinue: 'Continuar',
+    tagline: '"Para inmigrantes, por inmigrantes" · fibilaw.com',
+    sentence: 'Oración',
+  },
+  fr: {
+    tabs: ['Bienvenue','Vocabulaire','Quiz','Lecture','Compléter','Résultat'],
+    notice: 'Les instructions et définitions sont en français. Les mots anglais que vous apprenez seront toujours en anglais.',
+    unitTag: 'Unité 01 · Premier Cours d\'Anglais',
+    desc: 'Dans cette leçon, vous apprendrez les mots de direction en classe et comment vous présenter en anglais. Vous pratiquerez avec des cartes, un quiz, une courte lecture et des phrases à compléter.',
+    objHeading: 'Objectifs d\'apprentissage',
+    objectives: [
+      'Apprendre 12 mots de vocabulaire anglais pour la classe et les présentations',
+      'Lire une courte histoire sur le premier jour d\'un étudiant',
+      'Compléter des phrases avec le vocabulaire de la leçon',
+      'Obtenir 70% ou plus pour réussir ce module',
+    ],
+    metaTime: 'min', metaWords: 'mots de vocabulaire', metaPass: 'Réussir: 70%', metaAttempts: 'tentatives',
+    vocabTitle: 'Apprenez les mots', vocabSubhead: 'Cliquez sur chaque carte pour voir la définition. Révisez tous les mots avant le quiz.',
+    cardTap: 'Cliquer pour retourner', cardDef: 'Définition', cardEngNote: 'Mot anglais — toujours en anglais', cardExLabel: 'Exemple en anglais',
+    btnPrev: 'Précédent', btnNext: 'Suivant',
+    quizTag: 'Quiz de vocabulaire',
+    quizNext: 'Question suivante', quizFinish: 'Voir les résultats',
+    correctLabel: 'Correct!', incorrectLabel: 'Pas tout à fait.',
+    readTag: 'Lecture',
+    readTip: 'Passez la souris sur les mots surlignés pour voir leur définition en français.',
+    compLabel: 'Questions de compréhension',
+    checkRead: 'Vérifier les réponses',
+    fitbTag: 'Compléter', fitbTitle: 'Complétez les phrases',
+    wordBankLabel: 'Banque de mots (en anglais)',
+    checkFitb: 'Vérifier les réponses',
+    scorePct: 'Score', scorePass: 'Excellent travail!', scoreFail: 'Continuez d\'essayer',
+    scorePassSub: 'Vous avez réussi l\'Unité 01.',
+    scoreFailSub: 'Il vous faut 70% pour réussir. Révisez le vocabulaire et réessayez.',
+    scoreQuiz: 'Quiz', scoreFitb: 'Compléter', scoreReading: 'Lecture',
+    btnReview: 'Revoir le module', btnNextUnit: 'Unité 02',
+    btnBack: 'Retour', btnContinue: 'Continuer',
+    tagline: '"Pour les immigrants, par les immigrants" · fibilaw.com',
+    sentence: 'Phrase',
+  },
+};
+
+// ═══════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════
+let lang = 'en';
+let currentScreen = 0;
+const totalScreens = 6;
+
+// Vocab
+let currentCard = 0;
+let seenCards = new Set();
+
+// Quiz
+let quizIndex = 0;
+let quizScore = 0;
+let quizAnswered = 0;
+let quizOrder = [];
+let quizDone = false;
+
+// Reading
+let readScore = 0;
+let readChecked = false;
+
+// FITB
+let fitbScore = 0;
+let fitbChecked = false;
+let selectedChip = null; // currently selected word chip
+let blankValues = {};    // blank_index -> word
+
+// ═══════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════
+window.addEventListener('load', () => {
+  SCORM.init();
+  buildTabs();
+  buildDots();
+  renderAll();
+  updateProgress();
+  shuffleQuiz();
+  renderQuizQuestion();
+  renderReading();
+  renderFITB();
+});
+
+// ═══════════════════════════════════════════════════
+//  LANGUAGE
+// ═══════════════════════════════════════════════════
+function setLang(l) {
+  lang = l;
+  ['EN','ES','FR'].forEach(x => document.getElementById('lang'+x).classList.toggle('active', x.toLowerCase()===l));
+  renderAll();
+  updateCardDisplay();
+  renderQuizQuestion();
+  renderReading();
+  renderFITB();
+}
+
+function t(key) { return UI[lang][key] || UI.en[key] || key; }
+function tUnit(obj) { return (obj && (obj[lang] || obj.en)) || ''; }
+
+// ═══════════════════════════════════════════════════
+//  RENDER ALL UI TEXT
+// ═══════════════════════════════════════════════════
+function renderAll() {
+  const u = UNIT;
+  // Welcome
+  setText('noticeText', t('notice'));
+  setText('unitTag', t('unitTag'));
+  setText('unitTitle', tUnit(u.title));
+  setText('unitDesc', t('desc'));
+  setText('objHeading', t('objHeading'));
+  const ol = document.getElementById('objList');
+  ol.innerHTML = t('objectives').map(o => `<li>
+    <span class="obj-check">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="7.25" stroke="#3CBFBA" stroke-width="1.5"/>
+        <path d="M5 8l2.2 2.2 3.8-4" stroke="#3CBFBA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    <span>${o}</span>
+  </li>`).join('');
+  // Meta chips
+  document.getElementById('moduleMeta').innerHTML = `
+    <div class="meta-chip">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.25" stroke="#94A3B8" stroke-width="1.3"/><path d="M7 4v3.5l2 2" stroke="#94A3B8" stroke-width="1.3" stroke-linecap="round"/></svg>
+      ${tUnit(u.estimatedTime)} ${t('metaTime')}
+    </div>
+    <div class="meta-chip">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3h4c.55 0 1 .45 1 1v6.5c0-.55-.45-1-1-1H2V3z" stroke="#94A3B8" stroke-width="1.2" stroke-linejoin="round"/><path d="M12 3H8c-.55 0-1 .45-1 1v6.5c0-.55.45-1 1-1h4V3z" stroke="#94A3B8" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 4v6.5" stroke="#94A3B8" stroke-width="1"/></svg>
+      ${u.vocabulary.length} ${t('metaWords')}
+    </div>
+    <div class="meta-chip">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#94A3B8" stroke-width="1.3"/><circle cx="7" cy="7" r="3" stroke="#94A3B8" stroke-width="1.3"/><circle cx="7" cy="7" r="1" fill="#94A3B8"/></svg>
+      ${t('metaPass')}
+    </div>
+    <div class="meta-chip">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7A4.5 4.5 0 0 1 11.5 5" stroke="#94A3B8" stroke-width="1.3" stroke-linecap="round"/><path d="M11.5 7A4.5 4.5 0 0 1 2.5 9.5" stroke="#94A3B8" stroke-width="1.3" stroke-linecap="round"/><path d="M10.2 3.2l1.3 1.8-1.6 1" stroke="#94A3B8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.8 11l-1.3-1.5 1.6-1.1" stroke="#94A3B8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      ${u.attempts} ${t('metaAttempts')}
+    </div>`;
+  // Vocab
+  setText('vocabTag', t('tabs')[1]);
+  setText('vocabTitle', t('vocabTitle'));
+  setText('vocabSubhead', t('vocabSubhead'));
+  setText('cardTapLabel', t('cardTap'));
+  setText('cardDefLabel', t('cardDef'));
+  setText('cardEngNote', t('cardEngNote'));
+  setText('cardExLabel', t('cardExLabel'));
+  setText('btnPrevLabel', t('btnPrev'));
+  setText('btnNextLabel', t('btnNext'));
+  // Quiz
+  setText('quizTag', t('quizTag'));
+  // Reading
+  setText('readTag', t('readTag'));
+  setText('readTip', t('readTip'));
+  setText('compLabel', t('compLabel'));
+  setText('checkReadBtn', t('checkRead'));
+  // FITB
+  setText('fitbTag', t('fitbTag'));
+  setText('fitbTitle', t('fitbTitle'));
+  setText('wordBankLabel', t('wordBankLabel'));
+  setText('checkFitbBtn', t('checkFitb'));
+  // Score
+  setText('scorePctLabel', t('scorePct'));
+  setText('btnReview', t('btnReview'));
+  setText('btnNextUnitLabel', t('btnNextUnit'));
+  // Nav
+  setText('tagline', t('tagline'));
+  setText('btnBackLabel', t('btnBack'));
+  setText('btnNextLabel2', t('btnContinue'));
+  // Tabs
+  buildTabs();
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+// ═══════════════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════════════
+function buildTabs() {
+  const nav = document.getElementById('tabNav');
+  nav.innerHTML = t('tabs').map((label, i) => `
+    <button class="tab-btn ${i===currentScreen?'active':i<currentScreen?'done':''}" onclick="showScreen(${i})" id="tab${i}">
+      <span class="step-num">${i<currentScreen?'✓':i+1}</span>${label}
+    </button>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+//  FLASHCARDS
+// ═══════════════════════════════════════════════════
+function buildDots() {
+  const el = document.getElementById('vocabDots');
+  el.innerHTML = UNIT.vocabulary.map((_,i) =>
+    `<div class="vocab-dot${i===0?' active':''}" id="dot${i}"></div>`).join('');
+}
+
+function updateCardDisplay() {
+  const c = UNIT.vocabulary[currentCard];
+  document.getElementById('cardWord').textContent = c.word;
+  document.getElementById('cardPos').textContent = tUnit(c.pos);
+  document.getElementById('cardDef').textContent = tUnit(c.definition);
+  document.getElementById('cardEx').textContent = c.example_en;
+  document.getElementById('cardCounter').textContent = `Card ${currentCard+1} of ${UNIT.vocabulary.length}`;
+  // Dots
+  UNIT.vocabulary.forEach((_,i) => {
+    const d = document.getElementById('dot'+i);
+    if (d) d.className = 'vocab-dot' + (i===currentCard?' active':seenCards.has(i)?' seen':'');
+  });
+}
+
+function flipCard() {
+  document.getElementById('flashcard').classList.toggle('flipped');
+  seenCards.add(currentCard);
+  UNIT.vocabulary.forEach((_,i) => {
+    const d = document.getElementById('dot'+i);
+    if (d) d.className = 'vocab-dot' + (i===currentCard?' active':seenCards.has(i)?' seen':'');
+  });
+}
+function nextCard() {
+  seenCards.add(currentCard);
+  document.getElementById('flashcard').classList.remove('flipped');
+  currentCard = (currentCard+1)%UNIT.vocabulary.length;
+  setTimeout(updateCardDisplay, 50);
+}
+function prevCard() {
+  seenCards.add(currentCard);
+  document.getElementById('flashcard').classList.remove('flipped');
+  currentCard = (currentCard-1+UNIT.vocabulary.length)%UNIT.vocabulary.length;
+  setTimeout(updateCardDisplay, 50);
+}
+
+// ═══════════════════════════════════════════════════
+//  QUIZ
+// ═══════════════════════════════════════════════════
+function shuffleQuiz() {
+  quizOrder = [...UNIT.quiz].sort(() => Math.random()-0.5);
+  quizIndex = 0; quizScore = 0; quizAnswered = 0; quizDone = false;
+}
+
+function renderQuizQuestion() {
+  if (quizDone) return;
+  const q = quizOrder[quizIndex];
+  if (!q) return;
+  setText('quizCounter', `Question ${quizIndex+1} of ${quizOrder.length}`);
+  setText('quizScoreBadge', `Score: ${quizScore} / ${quizAnswered}`);
+  document.getElementById('quizWord').textContent = q.word;
+  document.getElementById('quizInstruction').textContent = tUnit(q.question);
+  document.getElementById('quizFeedback').className = 'quiz-feedback';
+  document.getElementById('quizNextBtn').style.display = 'none';
+
+  // Shuffle answer options
+  const opts = [
+    { text: tUnit(q.correct), correct: true },
+    ...q.wrong.map(w => ({ text: tUnit(w), correct: false })),
+  ].sort(() => Math.random()-0.5);
+
+  document.getElementById('quizOptions').innerHTML = opts.map((o,i) =>
+    `<button class="quiz-opt" onclick="selectAnswer(this,${o.correct})">${o.text}</button>`
+  ).join('');
+
+  // Next button label
+  const isLast = quizIndex >= quizOrder.length-1;
+  setText('quizNextLabel', isLast ? t('quizFinish') : t('quizNext'));
+}
+
+function selectAnswer(btn, isCorrect) {
+  document.querySelectorAll('.quiz-opt').forEach(o => { o.disabled = true; o.onclick = null; });
+  const fb = document.getElementById('quizFeedback');
+  quizAnswered++;
+  if (isCorrect) {
+    btn.classList.add('correct'); quizScore++;
+    const icon = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8.25" stroke="#10B981" stroke-width="1.5"/><path d="M5.5 9l2.8 2.8 4.2-4.6" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    fb.className = 'quiz-feedback show correct-fb';
+    fb.innerHTML = `${icon}<span><strong>${t('correctLabel')}</strong></span>`;
+  } else {
+    btn.classList.add('incorrect');
+    document.querySelectorAll('.quiz-opt').forEach(o => { if(o!==btn) o.classList.add('correct'); });
+    const icon = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8.25" stroke="#EF4444" stroke-width="1.5"/><path d="M6 6l6 6M12 6l-6 6" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+    fb.className = 'quiz-feedback show incorrect-fb';
+    fb.innerHTML = `${icon}<span><strong>${t('incorrectLabel')}</strong></span>`;
+  }
+  setText('quizScoreBadge', `Score: ${quizScore} / ${quizAnswered}`);
+  document.getElementById('quizNextBtn').style.display = 'block';
+  const isLast = quizIndex >= quizOrder.length-1;
+  setText('quizNextLabel', isLast ? t('quizFinish') : t('quizNext'));
+}
+
+function nextQuizQuestion() {
+  if (quizIndex >= quizOrder.length-1) {
+    quizDone = true;
+    showScreen(3); // go to reading
+  } else {
+    quizIndex++;
+    renderQuizQuestion();
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  READING
+// ═══════════════════════════════════════════════════
+function renderReading() {
+  const r = UNIT.reading;
+  setText('readTitle', tUnit(r.title));
+
+  // Build passage with highlighted words
+  let html = r.passage_en;
+  r.highlights.forEach(h => {
+    const tip = tUnit(h.tip);
+    const re = new RegExp(`\\b(${h.word})\\b`, 'gi');
+    html = html.replace(re, `<span class="hl">$1<span class="tip">${tip}</span></span>`);
+  });
+  // Paragraph breaks
+  html = html.split('\n\n').map(p => `<p>${p}</p>`).join('');
+  document.getElementById('readPassage').innerHTML = html;
+
+  // Comprehension questions
+  document.getElementById('compQuestions').innerHTML = r.questions.map((q,qi) => `
+    <div class="comp-q" id="compq${qi}">
+      <div class="comp-q-text">${tUnit(q.text)}</div>
+      <div class="comp-opts">
+        ${q.options.map((o,oi) => `
+          <label class="comp-opt" id="compopt${qi}_${oi}">
+            <input type="radio" name="compq${qi}" value="${oi}" data-correct="${o.correct}">
+            ${tUnit(o.text)}
+          </label>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function checkComprehension() {
+  if (readChecked) return;
+  let correct = 0;
+  UNIT.reading.questions.forEach((q,qi) => {
+    const selected = document.querySelector(`input[name="compq${qi}"]:checked`);
+    q.options.forEach((_,oi) => {
+      const opt = document.getElementById(`compopt${qi}_${oi}`);
+      if (opt) {
+        const isCorrect = q.options[oi].correct;
+        const isSelected = selected && parseInt(selected.value)===oi;
+        if (isCorrect) { opt.classList.add('correct-ans'); correct++; }
+        else if (isSelected) opt.classList.add('incorrect-ans');
+      }
+    });
+  });
+  readScore = Math.round((correct/UNIT.reading.questions.length)*100);
+  readChecked = true;
+}
+
+// ═══════════════════════════════════════════════════
+//  FILL-IN-BLANK
+// ═══════════════════════════════════════════════════
+function renderFITB() {
+  const f = UNIT.fillInBlank;
+  setText('fitbIntro', tUnit(f.instructions));
+
+  // Word bank
+  document.getElementById('wordBank').innerHTML = f.wordBank.map(w =>
+    `<button class="word-chip" id="chip_${w}" onclick="selectChip(this,'${w}')">${w}</button>`
+  ).join('');
+
+  // Sentences
+  blankValues = {};
+  document.getElementById('fitbQuestions').innerHTML = f.sentences.map((s,i) => `
+    <div>
+      <div class="fitb-q-num">${t('sentence')} ${i+1}</div>
+      <div class="fitb-sentence">
+        <span>${tUnit(s.before)}</span>
+        <span class="fitb-blank empty" id="blank${i}" data-answer="${s.answer}" onclick="placeInBlank(${i})">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span>${tUnit(s.after)}</span>
+      </div>
+    </div>`).join('');
+  fitbChecked = false;
+}
+
+function selectChip(btn, word) {
+  // Deselect previous
+  document.querySelectorAll('.word-chip').forEach(c => c.style.outline = '');
+  if (selectedChip === word) { selectedChip = null; return; }
+  selectedChip = word;
+  btn.style.outline = '2px solid var(--teal)';
+}
+
+function placeInBlank(idx) {
+  if (!selectedChip) return;
+  const blank = document.getElementById('blank'+idx);
+  if (!blank || blank.classList.contains('correct')) return;
+
+  // If blank already has a word, return chip
+  const prev = blankValues[idx];
+  if (prev) {
+    const prevChip = document.getElementById('chip_'+prev);
+    if (prevChip) { prevChip.classList.remove('used'); prevChip.style.outline = ''; }
+  }
+
+  blank.textContent = selectedChip;
+  blank.classList.remove('empty','incorrect');
+  blankValues[idx] = selectedChip;
+
+  const chip = document.getElementById('chip_'+selectedChip);
+  if (chip) { chip.classList.add('used'); chip.style.outline = ''; }
+  selectedChip = null;
+}
+
+function checkFITB() {
+  if (fitbChecked) return;
+  let correct = 0;
+  UNIT.fillInBlank.sentences.forEach((s,i) => {
+    const blank = document.getElementById('blank'+i);
+    if (!blank) return;
+    const ans = (blankValues[i]||'').trim().toLowerCase();
+    const ok = ans === s.answer.toLowerCase();
+    blank.classList.remove('empty','incorrect','correct');
+    blank.classList.add(ok ? 'correct' : 'incorrect');
+    if (ok) correct++;
+  });
+  fitbScore = Math.round((correct/UNIT.fillInBlank.sentences.length)*100);
+  fitbChecked = true;
+}
+
+// ═══════════════════════════════════════════════════
+//  SCORE SCREEN
+// ═══════════════════════════════════════════════════
+function renderScore() {
+  const quizPct = quizAnswered > 0 ? Math.round((quizScore/UNIT.quiz.length)*100) : 0;
+  const overall = Math.round((quizPct*0.6) + (fitbScore*0.2) + (readScore*0.2));
+  const passed = overall >= UNIT.passingScore;
+
+  // Ring
+  const circumference = 345.4;
+  const offset = circumference - (circumference * overall/100);
+  const ring = document.getElementById('ringFill');
+  ring.style.strokeDashoffset = circumference; // start at 0
+  ring.classList.toggle('ring-fail', !passed);
+  setTimeout(() => { ring.style.strokeDashoffset = offset; }, 100);
+
+  setText('scoreNum', overall+'%');
+  setText('scoreTitle', passed ? t('scorePass') : t('scoreFail'));
+  setText('scoreSub', passed ? t('scorePassSub') : t('scoreFailSub'));
+
+  document.getElementById('scoreBreakdown').innerHTML = `
+    <div class="score-card"><span class="score-card-val">${quizPct}%</span><span class="score-card-label">${t('scoreQuiz')}</span></div>
+    <div class="score-card"><span class="score-card-val">${fitbScore}%</span><span class="score-card-label">${t('scoreFitb')}</span></div>
+    <div class="score-card"><span class="score-card-val">${readScore > 0 ? readScore+'%' : '—'}</span><span class="score-card-label">${t('scoreReading')}</span></div>`;
+
+  // Report to SCORM/Moodle
+  SCORM.finish(overall, passed);
+}
+
+// ═══════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════
+function showScreen(n) {
+  document.querySelectorAll('.screen').forEach((s,i) => s.classList.toggle('active', i===n));
+  currentScreen = n;
+  buildTabs();
+  updateProgress();
+  if (n === 1) updateCardDisplay();
+  if (n === 5) renderScore();
+}
+
+function nextScreen() { if (currentScreen < totalScreens-1) showScreen(currentScreen+1); }
+function prevScreen() { if (currentScreen > 0) showScreen(currentScreen-1); }
+
+function updateProgress() {
+  const pct = Math.round(((currentScreen+1)/totalScreens)*100);
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = `${currentScreen+1} / ${totalScreens}`;
+  document.getElementById('btnBack').style.display = currentScreen===0 ? 'none' : '';
+  setText('btnNextLabel2', currentScreen===totalScreens-1 ? t('btnReview') : t('btnContinue'));
+}
+</script>
+</body>
+</html>
